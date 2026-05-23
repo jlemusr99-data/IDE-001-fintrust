@@ -1,0 +1,11 @@
+========================
+-- saldo vigente y vencido por segmento
+========================
+
+SELECT
+    segment AS segmento,
+    SUM(saldo_vigente) AS saldo_vigente_total,
+    SUM(saldo_vencido) AS saldo_vencido_total
+FROM PrdDatoscaso.fact_creditos
+GROUP BY segment
+ORDER BY saldo_vencido_total DESC;
