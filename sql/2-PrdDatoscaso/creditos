@@ -1,0 +1,35 @@
+-- =========================================================
+-- Creditos - Analítica
+-- Inserta datos limpios
+-- =========================================================
+CREATE TABLE IF NOT EXISTS PrdDatoscaso.creditos (
+ loan_id STRING,
+customer_id STRING,
+ origination_date TIMESTAMP,
+ principal_amount FLOAT64,
+ annual_rate FLOAT64,
+ term_months INT64,
+ loan_status STRING,
+ product_type STRING
+);
+
+INSERT INTO PrdDatoscaso.creditos (
+  loan_id,
+  customer_id,
+  origination_date,
+  principal_amount,
+  annual_rate,
+  term_months,
+  loan_status,
+  product_type
+)
+SELECT
+  loan_id,
+  customer_id,
+  TIMESTAMP(origination_date) AS origination_date,
+  principal_amount,
+  annual_rate,
+  term_months,
+  loan_status,
+  product_type
+FROM DevDatoscaso.loans;
