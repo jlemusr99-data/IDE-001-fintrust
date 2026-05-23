@@ -1,3 +1,8 @@
+-- =========================================================
+-- Cuota credito - Analítica
+-- Inserta datos limpios
+-- =========================================================
+
 CREATE TABLE IF NOT EXISTS PrdDatoscaso.cuotas_pro_credito (
  installment_id STRING,
  loan_id STRING,
