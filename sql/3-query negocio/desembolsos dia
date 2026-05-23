@@ -1,0 +1,15 @@
+=====================================
+-- Desembolsos por dia agrupado por ciudad
+================================
+  
+SELECT
+    DATE(origination_date) AS fecha,
+    city AS ciudad,
+    SUM(principal_amount) AS total_desembolso
+FROM PrdDatoscaso.fact_creditos
+GROUP BY
+    fecha,
+    ciudad
+ORDER BY
+    fecha,
+    ciudad;
