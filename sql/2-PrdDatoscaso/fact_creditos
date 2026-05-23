@@ -1,0 +1,46 @@
+------------------------
+------------------------
+-- Esta tabla FACT consolida la información transaccional de créditos en una estructura analítica optimizada para consumo en BI.
+-- Permite centralizar métricas clave de originación, recaudo y mora en una sola vista, facilitando el análisis de desempeño crediticio.
+------------------------
+------------------------
+
+CREATE OR REPLACE TABLE PrdDatoscaso.fact_creditos AS
+SELECT
+    cli.customer_id,
+    cli.city,
+    cli.segment,
+    cre.loan_id,
+    cre.origination_date,
+    cre.principal_amount,
+    cre.loan_status,
+    cre.product_type,
+    FORMAT_TIMESTAMP('%Y-%m', cre.origination_date) AS cohort_month,
+    cuo.installment_id,
+    cuo.installment_number,
+    cuo.due_date,
+    (cuo.principal_due + cuo.interest_due) AS cuota_total,
+    cuo.installment_status,
+    pag.payment_id,
+    pag.payment_date,
+    pag.payment_amount,
+    pag.payment_channel,
+    pag.payment_status,
+    DATE_DIFF(CURRENT_DATE(), DATE(cuo.due_date), DAY) AS dias_mora,
+    CASE
+    WHEN cuo.installment_status IN ('PENDING','PARTIAL')
+        THEN (cuo.principal_due + cuo.interest_due)
+        ELSE 0
+    END AS saldo_vigente,
+    CASE
+    WHEN DATE_DIFF(CURRENT_DATE(), DATE(cuo.due_date), DAY) > 30
+        THEN (cuo.principal_due + cuo.interest_due)
+        ELSE 0
+    END AS saldo_vencido
+FROM PrdDatoscaso.clientes as cli
+INNER JOIN PrdDatoscaso.creditos as cre
+    ON cli.customer_id = cre.customer_id
+LEFT JOIN PrdDatoscaso.cuotas_pro_credito as cuo
+    ON cre.loan_id = cuo.loan_id
+LEFT JOIN PrdDatoscaso.pagos as pag
+    ON cuo.installment_id = pag.installment_id;
