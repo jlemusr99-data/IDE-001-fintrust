@@ -1,0 +1,30 @@
+-- =========================================================
+-- Tabla analítica que consolida métricas diarias de crédito, recaudo y mora por ciudad y segmento.
+-- Permite el análisis de desempeño financiero diario, incluyendo originación, recuperación y nivel de mora.
+-- =========================================================
+
+CREATE OR REPLACE TABLE PrdDatoscaso.fact_datos_diarias AS
+SELECT
+    DATE(origination_date) AS fecha,
+    city as ciudad,
+    segment as segmento,
+    SUM(principal_amount) AS total_credito,
+    SUM(payment_amount) AS total_recaudo,
+    SUM(saldo_vigente) AS saldo_vigente,
+    SUM(saldo_vencido) AS saldo_vencido,
+    COUNTIF(dias_mora > 0) AS cuotas_en_mora,
+    SAFE_DIVIDE(
+    SUM(
+        CASE
+            WHEN dias_mora > 30
+            THEN payment_amount
+            ELSE 0
+        END
+    ),
+    SUM(payment_amount)
+) AS porcentaje_recaudo_mora
+FROM PrdDatoscaso.fact_creditos
+GROUP BY
+    fecha,
+    city,
+    segment;
