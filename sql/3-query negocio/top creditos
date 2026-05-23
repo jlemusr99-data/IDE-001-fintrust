@@ -1,0 +1,15 @@
+==============
+--- top 10 creditos
+==============
+SELECT
+    loan_id,
+    SUM(saldo_vigente) AS saldo_vigente_total,
+    SUM(saldo_vencido) AS saldo_vencido_total,
+    SUM(saldo_vigente + saldo_vencido) AS saldo_pendiente_total,
+    MAX(dias_mora) AS max_dias_mora
+FROM PrdDatoscaso.fact_creditos
+GROUP BY loan_id
+ORDER BY 
+    saldo_vencido_total DESC,
+    max_dias_mora DESC
+LIMIT 10;
