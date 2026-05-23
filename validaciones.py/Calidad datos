@@ -1,0 +1,37 @@
+#===========================
+#-- validadn
+#===========================
+# Realizar validaciones básicas de calidad antes de cargalos datos a BigQuery.
+# ==========================
+
+import pandas as pd
+df = pd.read_csv("raw_fintrust.loans.csv")
+
+critical_columns = [
+    "loan_id",
+    "customer_id",
+    "origination_date",
+    "principal_amount",
+    "loan_status"
+]
+
+nulls = df[critical_columns].isnull().sum()
+print("Nulos en campos críticos:")
+print(nulls)
+
+duplicates = df.duplicated(subset=["loan_id"]).sum()
+print(f"Total loans duplicados: {duplicates}")
+
+invalid_principal = df[df["principal_amount"] <= 0]
+print(f"Loans con monto inválido: {len(invalid_principal)}")
+
+invalid_rate = df[(df["annual_rate"] < 0) | (df["annual_rate"] > 100)]
+print(f"Loans con tasa inválida: {len(invalid_rate)}")
+
+invalid_term = df[df["term_months"] <= 0]
+print(f"Loans con plazo inválido: {len(invalid_term)}")
+
+df["origination_date"] = pd.to_datetime(df["origination_date"],errors="coerce")
+invalid_dates = df[df["origination_date"].isnull()]
+print(f"Fechas inválidas: {len(invalid_dates)}")
+
