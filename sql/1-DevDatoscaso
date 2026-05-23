@@ -1,0 +1,52 @@
+-- =========================================================
+-- STAGING 1-DevDatoscaso - Limpieza y estandarización
+-- Crea las tablas iniciales del modelo listas para cargar la información
+-- =========================================================
+-- Clientes
+
+CREATE TABLE IF NOT EXISTS DevDatoscaso.customers (
+ customer_id STRING,
+ full_name STRING,
+ city STRING,
+ segment STRING,
+ monthly_income FLOAT64,
+ created_at STRING
+);
+
+-- Creditos
+
+CREATE TABLE IF NOT EXISTS DevDatoscaso.loans (
+ loan_id STRING,
+ customer_id STRING,
+ origination_date STRING,
+ principal_amount FLOAT64,
+ annual_rate FLOAT64,
+ term_months INT64,
+ loan_status STRING,
+ product_type STRING
+);
+
+-- Cuotas programadas
+
+CREATE TABLE IF NOT EXISTS DevDatoscaso.installments (
+ installment_id STRING,
+ loan_id STRING,
+ installment_number INT64,
+ due_date STRING,
+ principal_due FLOAT64,
+ interest_due FLOAT64,
+ installment_status STRING
+);
+
+--Pagos recibidos
+
+CREATE TABLE IF NOT EXISTS DevDatoscaso.payments (
+ payment_id STRING,
+ loan_id STRING,
+ installment_id STRING,
+ payment_date DATE,
+ payment_amount FLOAT64,
+ payment_channel STRING,
+ payment_status STRING,
+ loaded_at TIMESTAMP
+);
