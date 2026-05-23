@@ -1,0 +1,29 @@
+-- =========================================================
+-- Clientes - Analítica
+-- Inserta datos limpios
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS PrdDatoscaso.clientes (
+ customer_id STRING,
+ full_name STRING,
+ city STRING,
+ segment STRING,
+ monthly_income FLOAT64,
+ created_at TIMESTAMP
+);
+INSERT INTO PrdDatoscaso.clientes (
+  customer_id,
+  full_name,
+  city,
+  segment,
+  monthly_income,
+  created_at
+)
+SELECT
+  customer_id,
+  full_name,
+  city,
+  segment,
+  monthly_income,
+  TIMESTAMP(created_at) AS created_at
+FROM DevDatoscaso.customers;
