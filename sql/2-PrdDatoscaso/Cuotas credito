@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS PrdDatoscaso.cuotas_pro_credito (
+ installment_id STRING,
+ loan_id STRING,
+ installment_number INT64,
+ due_date TIMESTAMP,
+ principal_due FLOAT64,
+ interest_due FLOAT64,
+ installment_status STRING
+);
+INSERT INTO PrdDatoscaso.cuotas_pro_credito (
+  installment_id,
+  loan_id,
+  installment_number,
+  due_date,
+  principal_due,
+  interest_due,
+  installment_status
+)
+SELECT
+  installment_id,
+  loan_id,
+  installment_number,
+  TIMESTAMP(due_date) AS due_date,
+  principal_due,
+  interest_due,
+  installment_status
+FROM DevDatoscaso.installments;
