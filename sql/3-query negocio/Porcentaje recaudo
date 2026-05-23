@@ -1,0 +1,21 @@
+==============
+-- porcentaje del recaudo del día
+==============
+SELECT
+    DATE(payment_date) AS fecha,
+    SUM(payment_amount) AS recaudo_total_dia,
+    SUM(
+        CASE 
+            WHEN dias_mora > 0 
+            THEN payment_amount 
+            ELSE 0 
+        END
+    ) AS recaudo_en_mora,
+    SAFE_DIVIDE(
+        SUM(CASE WHEN dias_mora > 0 THEN payment_amount ELSE 0 END),
+        SUM(payment_amount)
+    ) AS porcentaje_recaudo_en_mora
+FROM PrdDatoscaso.fact_creditos
+WHERE payment_amount IS NOT NULL
+GROUP BY fecha
+ORDER BY fecha;
